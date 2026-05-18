@@ -172,28 +172,38 @@
     const originalLabel = submitBtn.textContent;
     submitBtn.textContent = 'جاري الإرسال…';
 
+    const payload = Object.fromEntries(new FormData(form).entries());
+    console.log('[form] POST', form.action, payload);
+
     try {
       const res = await fetch(form.action, {
         method: 'POST',
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(new FormData(form).entries())),
+        body: JSON.stringify(payload),
       });
-      const data = await res.json().catch(() => ({}));
+      const rawBody = await res.text();
+      console.log('[form] response', res.status, res.statusText, '|', rawBody);
+
+      let data = {};
+      try { data = JSON.parse(rawBody); } catch (_) { /* not JSON */ }
+
       if (!res.ok) {
-        throw new Error(data.message || 'Submission failed');
+        const errMsg = Array.isArray(data.errors)
+          ? data.errors.map((er) => er.message || er.field).join(', ')
+          : data.error || rawBody || 'no body';
+        throw new Error(`HTTP ${res.status} — ${errMsg}`);
       }
-      // FormSubmit's very first submission for a new email returns an activation message
-      // (the owner must click a link in their inbox before later messages get delivered).
-      const activationFlow = data.message && /confirm|activate|verify/i.test(data.message);
-      if (activationFlow) {
-        statusEl.classList.add('is-success');
-        statusEl.textContent = 'تم الإرسال — يرجى تأكيد الرسالة من صندوق البريد ثم المحاولة مرة أخرى.';
-      } else {
+
+      // Formspree returns { ok: true, next: "..." } on success
+      if (data.ok === true) {
         statusEl.classList.add('is-success');
         statusEl.textContent = 'شكراً لكم — وصلت رسالتكم.';
         form.reset();
+      } else {
+        throw new Error(`Unexpected response: ${rawBody}`);
       }
     } catch (err) {
+      console.error('[form] submit failed:', err);
       statusEl.classList.add('is-error');
       statusEl.textContent = 'عذراً، حدث خطأ. الرجاء المحاولة مرة أخرى.';
     } finally {
