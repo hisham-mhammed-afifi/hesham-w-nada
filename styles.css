@@ -19,7 +19,7 @@
 
 * { box-sizing: border-box; }
 
-html, body { margin: 0; padding: 0; }
+html, body { margin: 0; padding: 0; overflow-x: hidden; }
 
 body {
   font-family: var(--font-ui);
@@ -97,16 +97,37 @@ img { display: block; max-width: 100%; }
 
 .corner {
   position: absolute;
-  width: clamp(140px, 28vw, 260px);
+  width: clamp(120px, 20vw, 220px);
+  height: auto;
   pointer-events: none;
   user-select: none;
-  opacity: 0.95;
+  opacity: 0.9;
+  transform-origin: center center;
 }
 
-.corner--tl { top: -10px; left: -20px; transform: rotate(0deg); }
-.corner--tr { top: -10px; right: -20px; transform: scaleX(-1); }
-.corner--bl { bottom: -10px; left: -20px; transform: scaleY(-1); }
-.corner--br { bottom: -10px; right: -20px; transform: scale(-1, -1); }
+.corner--tl {
+  top: -10px;
+  left: -10px;
+  transform: scaleX(-1) rotate(152deg);
+}
+
+.corner--tr {
+  top: -10px;
+  right: -10px;
+  transform: rotate(152deg);
+}
+
+.corner--bl {
+  bottom: -10px;
+  left: -10px;
+  transform: scaleX(-1) scaleY(-1) rotate(152deg);
+}
+
+.corner--br {
+  bottom: -10px;
+  right: -10px;
+  transform: scaleY(-1) rotate(152deg);
+}
 
 .hero__inner {
   position: relative;
@@ -117,6 +138,7 @@ img { display: block; max-width: 100%; }
   flex-direction: column;
   align-items: center;
   gap: 1.75rem;
+  padding-inline: clamp(0.5rem, 8vw, 4rem);
 }
 
 .verse {
@@ -309,9 +331,15 @@ img { display: block; max-width: 100%; }
 
 .wishes__honey {
   position: absolute;
-  left: -9999px;
-  opacity: 0;
-  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .field {
@@ -439,9 +467,20 @@ img { display: block; max-width: 100%; }
 
   .cd-tile { padding: 1.1rem 0.25rem; }
 
-  .corner { width: clamp(110px, 38vw, 180px); }
+  .corner {
+    width: clamp(100px, 22vw, 160px);
+    opacity: 0.85;
+  }
+  /* All four corners stay visible — no display:none. */
 
   .datebar { gap: 0.5rem; }
+}
+
+@media (max-width: 480px) {
+  .corner {
+    width: clamp(80px, 26vw, 120px);
+    opacity: 0.82;
+  }
 }
 
 @media (max-width: 420px) {

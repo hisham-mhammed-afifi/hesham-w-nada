@@ -18,6 +18,7 @@
   const pad = (n) => String(n).padStart(2, '0');
   const toArabicDigits = (s) => String(s).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
 
+  let timerId;
   function tick() {
     const now = Date.now();
     const diff = WEDDING_DATE.getTime() - now;
@@ -35,14 +36,14 @@
     const minutes = Math.floor((s % 3600) / 60);
     const seconds = s % 60;
 
-    els.days.textContent = toArabicDigits(days);
-    els.hours.textContent = toArabicDigits(pad(hours));
+    els.days.textContent    = toArabicDigits(pad(days));
+    els.hours.textContent   = toArabicDigits(pad(hours));
     els.minutes.textContent = toArabicDigits(pad(minutes));
     els.seconds.textContent = toArabicDigits(pad(seconds));
   }
 
+  timerId = setInterval(tick, 1000);
   tick();
-  const timerId = setInterval(tick, 1000);
 
   /* ===================== BACKGROUND AUDIO ===================== */
   const audio = document.getElementById('bg-audio');
@@ -55,10 +56,11 @@
 
   // Step 1: muted autoplay is allowed by every modern browser. Start it silently.
   audio.muted = true;
-  const initialPlay = audio.play().catch(() => {});
+  audio.play().catch(() => {});
 
-  // Step 2: the moment the user touches the page, unmute (and play if step 1 was blocked).
-  const events = ['pointerdown', 'touchstart', 'click', 'keydown', 'scroll', 'mousemove'];
+  // Step 2: on the first real user gesture, unmute (and play if step 1 was blocked).
+  // 'mousemove' intentionally excluded — phantom-cursor extensions and trackpads would unmute without consent.
+  const events = ['pointerdown', 'touchstart', 'click', 'keydown', 'scroll'];
   const onFirstGesture = () => {
     audio.muted = false;
     if (audio.paused) audio.play().catch(() => {});
@@ -67,13 +69,6 @@
   events.forEach((evt) =>
     window.addEventListener(evt, onFirstGesture, { once: true, capture: true, passive: true })
   );
-
-  // Also handle the case where a returning visitor's browser already allows unmuted autoplay.
-  initialPlay.then(() => {
-    // If audio is already playing muted, try once more unmuted in case the policy allows it.
-    audio.muted = false;
-    audio.play().catch(() => { audio.muted = true; audio.play().catch(() => {}); });
-  });
 
   /* ===================== TOAST ===================== */
   const toastEl = document.getElementById('toast');
@@ -180,12 +175,19 @@
         body: JSON.stringify(Object.fromEntries(new FormData(form).entries())),
       });
       const data = await res.json().catch(() => ({}));
-      if (res.ok && (data.success === 'true' || data.success === true || res.status === 200)) {
+      if (!res.ok) {
+        throw new Error(data.message || 'Submission failed');
+      }
+      // FormSubmit's very first submission for a new email returns an activation message
+      // (the owner must click a link in their inbox before later messages get delivered).
+      const activationFlow = data.message && /confirm|activate|verify/i.test(data.message);
+      if (activationFlow) {
+        statusEl.classList.add('is-success');
+        statusEl.textContent = 'تم الإرسال — يرجى تأكيد الرسالة من صندوق البريد ثم المحاولة مرة أخرى.';
+      } else {
         statusEl.classList.add('is-success');
         statusEl.textContent = 'شكراً لكم — وصلت رسالتكم.';
         form.reset();
-      } else {
-        throw new Error(data.message || 'Submission failed');
       }
     } catch (err) {
       statusEl.classList.add('is-error');
