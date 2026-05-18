@@ -96,13 +96,14 @@ img { display: block; max-width: 100%; }
 }
 
 .corner {
-  position: absolute;
+  position: fixed;
   width: clamp(120px, 20vw, 220px);
   height: auto;
   pointer-events: none;
   user-select: none;
   opacity: 0.9;
   transform-origin: center center;
+  z-index: 5;
 }
 
 .corner--tl {
