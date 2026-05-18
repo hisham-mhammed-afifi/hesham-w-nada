@@ -63,7 +63,7 @@
   const events = ['pointerdown', 'touchstart', 'click', 'keydown', 'scroll'];
   const onFirstGesture = () => {
     audio.muted = false;
-    if (audio.paused) audio.play().catch(() => {});
+    audio.play().catch((e) => console.warn('[audio] play failed', e));
     events.forEach((evt) => window.removeEventListener(evt, onFirstGesture, true));
   };
   events.forEach((evt) =>

@@ -36,7 +36,7 @@ img { display: block; max-width: 100%; }
 .section-title {
   font-family: var(--font-arabic);
   font-weight: 400;
-  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-size: clamp(2.2rem, 5vw, 2.75rem);
   color: var(--brown-script);
   text-align: center;
   margin: 0 0 0.75rem;
@@ -144,7 +144,7 @@ img { display: block; max-width: 100%; }
 
 .verse {
   font-family: var(--font-arabic);
-  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+  font-size: clamp(1.2rem, 2.4vw, 1.4rem);
   color: var(--brown-script);
   line-height: 2.1;
   margin: 0;
@@ -154,7 +154,7 @@ img { display: block; max-width: 100%; }
 .couple {
   font-family: var(--font-arabic);
   font-weight: 400;
-  font-size: clamp(3rem, 9vw, 5.5rem);
+  font-size: clamp(3.6rem, 9vw, 5.5rem);
   color: var(--brown-script);
   margin: 0.5rem 0 0;
   line-height: 1.2;
@@ -174,7 +174,7 @@ img { display: block; max-width: 100%; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: clamp(1rem, 2.4vw, 1.35rem);
+  font-size: clamp(1.15rem, 2.4vw, 1.4rem);
 }
 
 .datebar__divider {
@@ -184,9 +184,9 @@ img { display: block; max-width: 100%; }
   opacity: 0.55;
 }
 
-.datebar__month-name { font-size: clamp(1rem, 2.4vw, 1.35rem); }
+.datebar__month-name { font-size: clamp(1.15rem, 2.4vw, 1.4rem); }
 .datebar__month-num {
-  font-size: clamp(1.8rem, 4.5vw, 2.5rem);
+  font-size: clamp(2.1rem, 4.5vw, 2.5rem);
   font-weight: 700;
   line-height: 1;
   margin-top: 0.1rem;
@@ -194,7 +194,7 @@ img { display: block; max-width: 100%; }
 
 .venue-line {
   font-family: var(--font-serif);
-  font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+  font-size: clamp(1.25rem, 2.4vw, 1.4rem);
   color: var(--brown-script);
   margin: 0.5rem 0 0;
   letter-spacing: 0.05em;
@@ -202,7 +202,7 @@ img { display: block; max-width: 100%; }
 
 .welcome {
   font-family: var(--font-arabic);
-  font-size: clamp(1rem, 2.2vw, 1.2rem);
+  font-size: clamp(1.15rem, 2.2vw, 1.3rem);
   color: var(--brown-script);
   line-height: 2.1;
   margin: 1rem 0 0;
@@ -238,14 +238,14 @@ img { display: block; max-width: 100%; }
 .cd-tile__num {
   font-family: var(--font-arabic);
   font-weight: 700;
-  font-size: clamp(2rem, 7vw, 3.5rem);
+  font-size: clamp(2.3rem, 7vw, 3.5rem);
   color: var(--rose-deep);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
 .cd-tile__label {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--taupe);
 }
 
@@ -281,7 +281,7 @@ img { display: block; max-width: 100%; }
 .venue__name {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-size: clamp(1.7rem, 3.5vw, 2rem);
   color: var(--brown-script);
   margin: 0;
 }
