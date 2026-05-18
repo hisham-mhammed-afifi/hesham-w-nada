@@ -493,3 +493,101 @@ img { display: block; max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* ===================== OPEN-INVITE OVERLAY ===================== */
+.open-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-blush) 100%);
+  cursor: pointer;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  animation: open-overlay-in 0.5s ease both;
+}
+
+@keyframes open-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.open-overlay.is-open {
+  opacity: 0;
+  transform: scale(1.05);
+  pointer-events: none;
+}
+
+.open-overlay__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+  color: var(--brown-script);
+  text-align: center;
+  padding: 0 1.5rem;
+}
+
+.open-overlay__pulse {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  display: grid;
+  place-items: center;
+}
+
+.open-overlay__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--rose);
+  opacity: 0;
+  animation: open-overlay-pulse 2.5s ease-out infinite;
+}
+
+.open-overlay__ring:nth-child(2) {
+  animation-delay: 1.25s;
+}
+
+@keyframes open-overlay-pulse {
+  0% { transform: scale(0.65); opacity: 0.85; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+
+.open-overlay__envelope {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  display: grid;
+  place-items: center;
+  color: var(--brown-script);
+  box-shadow: var(--shadow-soft);
+  animation: open-overlay-bob 2.5s ease-in-out infinite;
+}
+
+@keyframes open-overlay-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.open-overlay__title {
+  font-family: var(--font-arabic);
+  font-size: clamp(1.5rem, 5vw, 1.9rem);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.open-overlay__hint {
+  font-family: var(--font-arabic);
+  font-size: 1rem;
+  margin: 0;
+  color: var(--taupe);
+  opacity: 0.85;
+}
+
+.open-overlay:focus-visible {
+  outline: 2px solid var(--rose-deep);
+  outline-offset: -8px;
+}

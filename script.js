@@ -45,30 +45,34 @@
   timerId = setInterval(tick, 1000);
   tick();
 
-  /* ===================== BACKGROUND AUDIO ===================== */
+  /* ===================== BACKGROUND AUDIO + OPEN-INVITE OVERLAY ===================== */
   const audio = document.getElementById('bg-audio');
   audio.volume = 0.6;
   audio.loop = true;
+  audio.muted = false;
 
   audio.addEventListener('error', () => {
     console.warn('[audio] failed to load', audio.error);
   });
 
-  // Step 1: muted autoplay is allowed by every modern browser. Start it silently.
-  audio.muted = true;
-  audio.play().catch(() => {});
-
-  // Step 2: on the first real user gesture, unmute (and play if step 1 was blocked).
-  // 'mousemove' intentionally excluded — phantom-cursor extensions and trackpads would unmute without consent.
-  const events = ['pointerdown', 'touchstart', 'click', 'keydown', 'scroll'];
-  const onFirstGesture = () => {
+  const overlay = document.getElementById('open-overlay');
+  let opened = false;
+  const openInvite = () => {
+    if (opened) return;
+    opened = true;
     audio.muted = false;
     audio.play().catch((e) => console.warn('[audio] play failed', e));
-    events.forEach((evt) => window.removeEventListener(evt, onFirstGesture, true));
+    overlay.classList.add('is-open');
+    setTimeout(() => overlay.remove(), 700);
   };
-  events.forEach((evt) =>
-    window.addEventListener(evt, onFirstGesture, { once: true, capture: true, passive: true })
-  );
+
+  overlay.addEventListener('click', openInvite);
+  overlay.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openInvite();
+    }
+  });
 
   /* ===================== TOAST ===================== */
   const toastEl = document.getElementById('toast');
