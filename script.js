@@ -156,62 +156,6 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   });
 
-  /* ===================== WISHES FORM ===================== */
-  const form = document.getElementById('wishes-form');
-  const statusEl = document.getElementById('wishes-status');
-  const submitBtn = document.getElementById('wishes-submit');
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    statusEl.className = 'wishes__status';
-    statusEl.textContent = '';
-
-    if (!form.reportValidity()) return;
-
-    submitBtn.disabled = true;
-    const originalLabel = submitBtn.textContent;
-    submitBtn.textContent = 'جاري الإرسال…';
-
-    const payload = Object.fromEntries(new FormData(form).entries());
-    console.log('[form] POST', form.action, payload);
-
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const rawBody = await res.text();
-      console.log('[form] response', res.status, res.statusText, '|', rawBody);
-
-      let data = {};
-      try { data = JSON.parse(rawBody); } catch (_) { /* not JSON */ }
-
-      if (!res.ok) {
-        const errMsg = Array.isArray(data.errors)
-          ? data.errors.map((er) => er.message || er.field).join(', ')
-          : data.error || rawBody || 'no body';
-        throw new Error(`HTTP ${res.status} — ${errMsg}`);
-      }
-
-      // Formspree returns { ok: true, next: "..." } on success
-      if (data.ok === true) {
-        statusEl.classList.add('is-success');
-        statusEl.textContent = 'شكراً لكم — وصلت رسالتكم.';
-        form.reset();
-      } else {
-        throw new Error(`Unexpected response: ${rawBody}`);
-      }
-    } catch (err) {
-      console.error('[form] submit failed:', err);
-      statusEl.classList.add('is-error');
-      statusEl.textContent = 'عذراً، حدث خطأ. الرجاء المحاولة مرة أخرى.';
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalLabel;
-    }
-  });
-
   function buildIcs({ uid, title, description, location, url, start, end }) {
     const fmt = (d) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
     const esc = (s) => String(s).replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
