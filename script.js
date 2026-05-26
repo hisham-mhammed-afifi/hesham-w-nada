@@ -46,33 +46,40 @@
   tick();
 
   /* ===================== BACKGROUND AUDIO + OPEN-INVITE OVERLAY ===================== */
-  const audio = document.getElementById('bg-audio');
-  audio.volume = 0.6;
-  audio.loop = true;
-  audio.muted = false;
+  const noMusic = new URLSearchParams(location.search).get('m') === 'n';
 
-  audio.addEventListener('error', () => {
-    console.warn('[audio] failed to load', audio.error);
-  });
-
-  const overlay = document.getElementById('open-overlay');
-  let opened = false;
-  const openInvite = () => {
-    if (opened) return;
-    opened = true;
+  if (noMusic) {
+    document.getElementById('open-overlay')?.remove();
+    document.getElementById('bg-audio')?.remove();
+  } else {
+    const audio = document.getElementById('bg-audio');
+    audio.volume = 0.6;
+    audio.loop = true;
     audio.muted = false;
-    audio.play().catch((e) => console.warn('[audio] play failed', e));
-    overlay.classList.add('is-open');
-    setTimeout(() => overlay.remove(), 700);
-  };
 
-  overlay.addEventListener('click', openInvite);
-  overlay.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      openInvite();
-    }
-  });
+    audio.addEventListener('error', () => {
+      console.warn('[audio] failed to load', audio.error);
+    });
+
+    const overlay = document.getElementById('open-overlay');
+    let opened = false;
+    const openInvite = () => {
+      if (opened) return;
+      opened = true;
+      audio.muted = false;
+      audio.play().catch((e) => console.warn('[audio] play failed', e));
+      overlay.classList.add('is-open');
+      setTimeout(() => overlay.remove(), 700);
+    };
+
+    overlay.addEventListener('click', openInvite);
+    overlay.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openInvite();
+      }
+    });
+  }
 
   /* ===================== TOAST ===================== */
   const toastEl = document.getElementById('toast');
